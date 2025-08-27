@@ -18,6 +18,12 @@ export default defineConfig([
         ...globals.browser,
       },
     },
+    'vue/multi-word-component-names': [
+      'error',
+      {
+        ignores: [],
+      },
+    ],
   },
 
   js.configs.recommended,
