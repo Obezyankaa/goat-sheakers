@@ -7,7 +7,13 @@ import CartItem from './CartItem.vue'
 
 <template>
   <div class="flex flex-col flex-1 gap-4 justify-between" v-auto-animate>
-    <CartItem v-for="item in cart" :key="item.id" :title="item.title" :price="item.price" :image-url="item.imageUrl"
-      @on-click-remove="() => removeFromCart(item)" />
+    <!-- <CartItem v-for="item in cart" :key="item.id" :title="item.title" :price="item.price" :image-url="item.imageUrl"
+      @on-click-remove="() => removeFromCart(item)" /> -->
+
+    <CartItem image-url="/sneakers/sneakers-2.jpg" title="nike" price="19990" />
+    <CartItem image-url="/sneakers/sneakers-2.jpg" title="nike" price="19990" />
+    <CartItem image-url="/sneakers/sneakers-2.jpg" title="nike" price="19990" />
+    <CartItem image-url="/sneakers/sneakers-2.jpg" title="nike" price="19990" />
+    <CartItem image-url="/sneakers/sneakers-2.jpg" title="nike" price="19990" />
   </div>
 </template>
