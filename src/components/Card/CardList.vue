@@ -1,4 +1,5 @@
 <script setup>
+// import { inject } from 'vue'
 import Card from './Card.vue'
 
 defineProps({
@@ -6,11 +7,9 @@ defineProps({
   isFavorites: Boolean,
 })
 
-const onClickAdd = () => {
-  console.log(add)
-}
+// const addToFavorite = inject('addToFavorite')
 
-// const emit = defineEmits(['addToFavorite', 'addToCart'])
+const emit = defineEmits(['addToFavorite', 'addToCart'])
 </script>
 
 <template>
@@ -24,6 +23,7 @@ const onClickAdd = () => {
       :price="item.price"
       :isFavorite="item.isFavorite"
       :isAdded="item.isAdded"
+      :onClickFavorite="() => emit('addToFavorite', item)"
     />
   </div>
 </template>
