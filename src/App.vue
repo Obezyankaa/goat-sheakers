@@ -19,6 +19,30 @@ const onChangeSearchInput = (event) => {
   filters.searchQuery = event.target.value
 }
 
+const fetchFavorite = async () => {
+  try {
+    const { data: favorites } = await axios.get(`${import.meta.env.VITE_API_URL}/favorites`)
+    console.log('data', favorites)
+
+    items.value = items.value.map((item) => {
+      const favorite = favorites.find((favorite) => favorite.id === item.id)
+      console.log('favorite', favorite)
+
+      if (!favorite) {
+        return item
+      }
+
+      return {
+        ...item,
+        isFavorite: true,
+        favoriteId: favorite.id,
+      }
+    })
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 const fetchItems = async () => {
   try {
     const params = {
@@ -30,12 +54,20 @@ const fetchItems = async () => {
     const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/items`, {
       params,
     })
-    items.value = data
-  } catch (error) {
-    console.log(error)
+    items.value = data.map((obj) => ({
+      ...obj,
+      isFavorite: false,
+      favoriteId: null,
+      isAdded: false,
+    }))
+  } catch (err) {
+    console.log(err)
   }
 }
-onMounted(fetchItems)
+onMounted(async () => {
+  await fetchItems()
+  await fetchFavorite()
+})
 watch(filters, fetchItems)
 </script>
 

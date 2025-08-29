@@ -6,6 +6,10 @@ defineProps({
   isFavorites: Boolean,
 })
 
+const onClickAdd = () => {
+  console.log(add)
+}
+
 // const emit = defineEmits(['addToFavorite', 'addToCart'])
 </script>
 
@@ -18,6 +22,8 @@ defineProps({
       :title="item.title"
       :imageUrl="item.imageUrl"
       :price="item.price"
+      :isFavorite="item.isFavorite"
+      :isAdded="item.isAdded"
     />
   </div>
 </template>
