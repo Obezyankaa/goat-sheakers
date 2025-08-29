@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, watch, ref, reactive } from 'vue'
+import { onMounted, watch, ref, provide, reactive } from 'vue'
 import axios from 'axios'
 import Drawer from './components/Drawer.vue'
 import Header from './components/Header.vue'
@@ -19,14 +19,16 @@ const onChangeSearchInput = (event) => {
   filters.searchQuery = event.target.value
 }
 
+const addToFavorite = async (item) => {
+  item.isFavorite = !item.isFavorite
+}
+
 const fetchFavorite = async () => {
   try {
     const { data: favorites } = await axios.get(`${import.meta.env.VITE_API_URL}/favorites`)
-    console.log('data', favorites)
 
     items.value = items.value.map((item) => {
       const favorite = favorites.find((favorite) => favorite.id === item.id)
-      console.log('favorite', favorite)
 
       if (!favorite) {
         return item
@@ -69,6 +71,7 @@ onMounted(async () => {
   await fetchFavorite()
 })
 watch(filters, fetchItems)
+provide('addToFavorite', addToFavorite)
 </script>
 
 <template>
@@ -102,7 +105,7 @@ watch(filters, fetchItems)
           </div>
         </div>
       </div>
-      <CardList :items="items" />
+      <CardList :items="items" @addToFavorite="addToFavorite" />
     </div>
   </div>
 </template>
