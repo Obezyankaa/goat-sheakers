@@ -1,15 +1,46 @@
 <script setup>
-import { onMounted, watch, ref, provide, reactive } from 'vue'
+import { onMounted, watch, ref, provide, reactive, computed } from 'vue'
 import axios from 'axios'
 import Drawer from './components/Drawer.vue'
 import Header from './components/Header.vue'
 import CardList from './components/Card/CardList.vue'
 
 const items = ref([])
+const cart = ref([])
+const drawerOpen = ref(false)
+
+const totalPrice = computed(() => cart.value.reduce((acc, curr) => acc + curr.price, 0))
+const vatPrice = computed(() => Math.round((totalPrice.value * 5) / 100))
+
+const closeDrawer = () => {
+  drawerOpen.value = false
+}
+
+const openDrawer = () => {
+  drawerOpen.value = true
+}
 const filters = reactive({
   sortBy: 'title',
   searchQuery: '',
 })
+
+const addToCart = (item) => {
+  cart.value.push(item)
+  item.isAdded = true
+}
+
+const removeFromCart = (item) => {
+  cart.value.splice(cart.value.indexOf(item), 1)
+  item.isAdded = false
+}
+
+const onClickAddPlus = (item) => {
+  if (!item.isAdded) {
+    addToCart(item)
+  } else {
+    removeFromCart(item)
+  }
+}
 
 const onChangeSelect = (event) => {
   filters.sortBy = event.target.value
@@ -20,7 +51,22 @@ const onChangeSearchInput = (event) => {
 }
 
 const addToFavorite = async (item) => {
-  item.isFavorite = !item.isFavorite
+  try {
+    if (!item.isFavorite) {
+      const obg = {
+        parentId: item.id,
+      }
+      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/favorites`, obg)
+      item.isFavorite = true
+      item.favoriteId = data.id
+    } else {
+      await axios.delete(`${import.meta.env.VITE_API_URL}/favorites/${item.favoriteId}`)
+      item.isFavorite = false
+      delete item.favoriteId
+    }
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 const fetchFavorite = async () => {
@@ -66,18 +112,19 @@ const fetchItems = async () => {
     console.log(err)
   }
 }
+
 onMounted(async () => {
   await fetchItems()
   await fetchFavorite()
 })
 watch(filters, fetchItems)
-provide('addToFavorite', addToFavorite)
+provide('cart', { cart, closeDrawer, openDrawer, addToCart, removeFromCart })
 </script>
 
 <template>
-  <!-- <Drawer /> -->
+  <Drawer v-if="drawerOpen" :total-price="totalPrice" :vat-price="vatPrice" />
   <div class="bg-white w-4/5 m-auto rounded-xl mt-14">
-    <Header />
+    <Header :total-price="totalPrice" @open-drawer="openDrawer" />
 
     <div class="p-10">
       <div class="flex justify-between items-center">
@@ -105,7 +152,7 @@ provide('addToFavorite', addToFavorite)
           </div>
         </div>
       </div>
-      <CardList :items="items" @addToFavorite="addToFavorite" />
+      <CardList :items="items" @add-to-favorite="addToFavorite" @add-to-cart="onClickAddPlus" />
     </div>
   </div>
 </template>
