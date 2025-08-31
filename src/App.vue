@@ -160,13 +160,8 @@ provide('cart', { cart, closeDrawer, openDrawer, addToCart, removeFromCart })
 </script>
 
 <template>
-  <Drawer
-    v-if="drawerOpen"
-    :total-price="totalPrice"
-    :vat-price="vatPrice"
-    @create-order="createOrder"
-    :is-loading="isCreatingOrder"
-  />
+  <Drawer v-if="drawerOpen" :total-price="totalPrice" :vat-price="vatPrice" @create-order="createOrder"
+    :is-loading="isCreatingOrder" />
   <div class="bg-white w-4/5 m-auto rounded-xl mt-14">
     <Header :total-price="totalPrice" @open-drawer="openDrawer" />
 
@@ -182,17 +177,9 @@ provide('cart', { cart, closeDrawer, openDrawer, addToCart, removeFromCart })
           </select>
 
           <div class="relative">
-            <img
-              class="absolute top-5 left-4 -translate-y-1/2"
-              src="/search.svg"
-              alt="иконка поиска"
-            />
-            <input
-              @input="onChangeSearchInput"
-              type="text"
-              placeholder="Поиск..."
-              class="border border-gray-300 rounded-md py-2 pl-11 pr-4 outline-none focus:border-gray-400"
-            />
+            <img class="absolute top-5 left-4 -translate-y-1/2" src="/search.svg" alt="иконка поиска" />
+            <input @input="onChangeSearchInput" type="text" placeholder="Поиск..."
+              class="border border-gray-300 rounded-md py-2 pl-11 pr-4 outline-none focus:border-gray-400" />
           </div>
         </div>
       </div>
