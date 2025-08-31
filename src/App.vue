@@ -7,6 +7,7 @@ import CardList from './components/Card/CardList.vue'
 
 const items = ref([])
 const cart = ref([])
+const isCreatingOrder = ref(false)
 const drawerOpen = ref(false)
 
 const totalPrice = computed(() => cart.value.reduce((acc, curr) => acc + curr.price, 0))
@@ -48,6 +49,22 @@ const onChangeSelect = (event) => {
 
 const onChangeSearchInput = (event) => {
   filters.searchQuery = event.target.value
+}
+
+const createOrder = async () => {
+  try {
+    isCreatingOrder.value = true
+    const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/orders`, {
+      items: cart.value,
+      totalPrice: totalPrice.value,
+    })
+    cart.value = []
+    return data
+  } catch (error) {
+    console.log(error)
+  } finally {
+    isCreatingOrder.value = false
+  }
 }
 
 const addToFavorite = async (item) => {
@@ -114,15 +131,42 @@ const fetchItems = async () => {
 }
 
 onMounted(async () => {
+  cart.value = JSON.parse(localStorage.getItem('cart') || '[]')
   await fetchItems()
   await fetchFavorite()
+
+  items.value = items.value.map((item) => ({
+    ...item,
+    isAdded: cart.value.some((cartItem) => cartItem.id === item.id),
+  }))
 })
 watch(filters, fetchItems)
+
+watch(cart, () => {
+  items.value = items.value.map((item) => ({
+    ...item,
+    isAdded: false,
+  }))
+})
+
+watch(
+  cart,
+  () => {
+    localStorage.setItem('cart', JSON.stringify(cart.value))
+  },
+  { deep: true },
+)
 provide('cart', { cart, closeDrawer, openDrawer, addToCart, removeFromCart })
 </script>
 
 <template>
-  <Drawer v-if="drawerOpen" :total-price="totalPrice" :vat-price="vatPrice" />
+  <Drawer
+    v-if="drawerOpen"
+    :total-price="totalPrice"
+    :vat-price="vatPrice"
+    @create-order="createOrder"
+    :is-loading="isCreatingOrder"
+  />
   <div class="bg-white w-4/5 m-auto rounded-xl mt-14">
     <Header :total-price="totalPrice" @open-drawer="openDrawer" />
 
