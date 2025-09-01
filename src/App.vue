@@ -1,12 +1,9 @@
 <script setup>
-import { onMounted, watch, ref, provide, reactive, computed } from 'vue'
-import axios from 'axios'
+import { watch, ref, provide, computed } from 'vue'
 import Drawer from './components/Drawer.vue'
 import Header from './components/Header.vue'
-import Home from './pages/Home.vue'
 
 const cart = ref([])
-const isCreatingOrder = ref(false)
 const drawerOpen = ref(false)
 
 const totalPrice = computed(() => cart.value.reduce((acc, curr) => acc + curr.price, 0))
@@ -29,23 +26,6 @@ const removeFromCart = (item) => {
   cart.value.splice(cart.value.indexOf(item), 1)
   item.isAdded = false
 }
-
-const createOrder = async () => {
-  try {
-    isCreatingOrder.value = true
-    const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/orders`, {
-      items: cart.value,
-      totalPrice: totalPrice.value,
-    })
-    cart.value = []
-    return data
-  } catch (error) {
-    console.log(error)
-  } finally {
-    isCreatingOrder.value = false
-  }
-}
-
 
 watch(
   cart,
