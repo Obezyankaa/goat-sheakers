@@ -10,7 +10,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="flex items-center border border-slate-200 p-4 rounded-xl gap-4">
+  <div class="flex dark:bg-gray-900 items-center border border-slate-200 p-4 rounded-xl gap-4 bg-red">
     <img class="w-16 h-16" :src="imageUrl" :alt="title" />
 
     <div class="flex flex-col flex-1">
