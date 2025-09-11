@@ -1,12 +1,14 @@
-<script setup>
-import { watch, ref, provide, computed } from 'vue'
-import Drawer from './components/Drawer.vue'
-import Header from './components/Header.vue'
+<script setup lang="ts">
+import { watch, ref, provide, computed } from 'vue';
+import Drawer from './components/Drawer.vue';
+import Header from './components/Header.vue';
 
-const cart = ref([])
+const cart = ref<Item>([])
 const drawerOpen = ref(false)
 
-const totalPrice = computed(() => cart.value.reduce((acc, curr) => acc + curr.price, 0))
+const totalPrice = computed(() =>
+  cart.value?.reduce((acc, curr) => acc + (curr?.price || 0), 0)
+)
 const vatPrice = computed(() => Math.round((totalPrice.value * 5) / 100))
 
 const closeDrawer = () => {
@@ -18,7 +20,8 @@ const openDrawer = () => {
 }
 
 const addToCart = (item) => {
-  cart.value.push(item)
+  console.log(item);
+  // cart.value.push(item)
   item.isAdded = true
 }
 
@@ -43,6 +46,7 @@ provide('cart', { cart, closeDrawer, openDrawer, addToCart, removeFromCart })
     :is-loading="isCreatingOrder" />
   <div class="bg-white w-4/5 m-auto rounded-xl mt-14">
     <Header :total-price="totalPrice" @open-drawer="openDrawer" />
+    <button @click="addToCart"></button>
     <div class="p-10">
       <router-view></router-view>
     </div>
