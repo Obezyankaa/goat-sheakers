@@ -16,5 +16,5 @@
 
 body {
   /* color: light-dark(#333b3c, #efefec); */
-  background-color: light-dark(rgb(247, 254, 231), rgb(4, 7, 17));
+  background-color: light-dark(rgb(255, 255, 255), rgb(4, 7, 17));
 }

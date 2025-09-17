@@ -6,7 +6,9 @@ import MainLayout from './layouts/MainLayout.vue'
 import Home from './pages/home/index.vue'
 import AuthLayout from './layouts/AuthLayout.vue'
 const Login = () => import('./pages/login/Login.vue')
-const About = () => import('./pages/about/About.vue')
+const Favorite = () => import('./pages/favorite/Favorite.vue')
+const Basket = () => import('./pages/basket/Basket.vue')
+
 const Details = () => import('./pages/sneakers/[id].vue')
 
 const routes = [
@@ -15,7 +17,8 @@ const routes = [
     component: MainLayout,
     children: [
       { path: '', name: 'Home', component: Home },
-      { path: 'about', name: 'About', component: About },
+      { path: 'favorite', name: 'Favorite', component: Favorite },
+      { path: 'basket', name: 'Basket', component: Basket },
       { path: 'sneakers/:id', name: 'Details', component: Details },
     ],
   },

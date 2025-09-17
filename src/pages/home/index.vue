@@ -1,3 +1,6 @@
+<script setup="ts">
+import Main from '../../components/Main.vue';
+</script>
 <template>
-  <h1>home</h1>
+  <Main />
 </template>
