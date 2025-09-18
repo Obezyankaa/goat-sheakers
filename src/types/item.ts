@@ -1,6 +1,8 @@
 export interface Item {
   id: number
+  title: string
   imageUrl: string
   price: number
-  title: string
+  isFavorite?: boolean // 👈 Добавь это
+  favoriteId?: number // 👈 Это тоже
 }
